@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * @author James MacGlashan.
+ * @author Min Wen.
  */
 public class EnvironmentMDP implements DomainGenerator{
 
