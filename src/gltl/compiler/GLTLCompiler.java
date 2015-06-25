@@ -499,7 +499,7 @@ public class GLTLCompiler implements DomainGenerator{
 			List <GroundedAction> srcGas =  this.srcAction.getAllApplicableGroundedActions(s);
 			List <GroundedAction> targetGas = new ArrayList<GroundedAction>(srcGas.size());
 			for(GroundedAction ga : srcGas){
-				targetGas.add(new GroundedAction(this.domain.getAction(this.getName()), ga.params));
+				targetGas.add(new GroundedAction(this, ga.params));
 			}
 
 			return targetGas;
