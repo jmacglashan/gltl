@@ -1,9 +1,9 @@
 # gltl
 
 ## Compiling and running
-Compiling is performed using ant, or alternatively, you can import the code into your favorite IDE (I prefer IntelliJ).
+Compiling is performed using ant, or alternatively, you can import the code into your favorite IDE (I prefer IntelliJ). If you do not have ant installed, you can get it from http://ant.apache.org/bindownload.cgi or you can install it with a command-line package manger like apt-get (linux) or mac port (mac).
 
-To compile and run from the command line, first cd into the directory. Then compile with:
+Assuming you have ant installed, to compile and run from the command line, first cd into the directory. Then compile with:
 
 `ant`
 
