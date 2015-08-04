@@ -1,0 +1,113 @@
+import burlap.behavior.singleagent.EpisodeAnalysis;
+import burlap.behavior.singleagent.EpisodeSequenceVisualizer;
+import burlap.behavior.singleagent.Policy;
+import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
+import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
+import burlap.behavior.statehashing.DiscreteStateHashFactory;
+import burlap.domain.singleagent.gridworld.GridWorldDomain;
+import burlap.domain.singleagent.gridworld.GridWorldVisualizer;
+import burlap.oomdp.core.*;
+import burlap.oomdp.singleagent.GroundedAction;
+import burlap.oomdp.singleagent.RewardFunction;
+import burlap.oomdp.singleagent.explorer.VisualExplorer;
+import burlap.oomdp.visualizer.Visualizer;
+
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * @author James MacGlashan.
+ */
+public class task {
+
+	public static void main(String[] args) {
+
+		GridWorldDomain gwd = new GridWorldDomain(10, 10); //we'll give ourselves a 10x10 gridWorld canvas
+		gwd.setNumberOfLocationTypes(2); //two kinds of locations to specify
+		// gwd.horizontal1DNorthWall(0, 9, 1); //make a wall to confine space to the bottom two rows
+		gwd.setProbSucceedTransitionDynamics(0.95); // make things noisy slip
+		final Domain domain = gwd.generateDomain(); //create our domain
+
+		//construct our state
+		int numLocations = 24; // allocate locations
+		State s = GridWorldDomain.getOneAgentNLocationState(domain,numLocations);
+		GridWorldDomain.setAgent(s, 1, 7); //agent starting place
+		GridWorldDomain.setLocation(s, 0, 7, 8, 1); //first location (0) in 0,1 with type 1 = goal
+
+		int i;
+		for (i = 0; i < 3; i++) {
+		    GridWorldDomain.setLocation(s, i+1, i+1, 1, 0); //second location (1) in 1,1 with type 0
+		    // System.out.println("Count is: " + i);
+		}
+		for (i = 0; i < 4; i++) {
+		    GridWorldDomain.setLocation(s, i+4, i+4, 2, 0); 
+		}
+		for (i = 0; i < 7; i++) {
+		    GridWorldDomain.setLocation(s, i+8, 3, i+3, 0); 
+		}
+		for (i = 0; i < 4; i++) {
+		    GridWorldDomain.setLocation(s, i+15, 5, i+5, 0);
+		}
+		for (i = 0; i < 3; i++) {
+		    GridWorldDomain.setLocation(s, i+19, 7+i, 5+i, 0);
+		}
+		GridWorldDomain.setLocation(s, 22, 6, 5, 0);
+		GridWorldDomain.setLocation(s, 23, 9, 8, 0);
+		
+		//uncomment to launch visual explorer
+		//stateExplorer(gwd, domain, s);
+		
+
+		if(args.length > 0){
+			formula = args[0];
+		}
+
+		System.out.println("Running for formula " + formula);
+
+		// domain is the environment domain
+
+		// define the propositions (orange and blue)
+		// 		new SouthWestRoomPF(envDomain);
+
+
+		// connect GLTL symbols to propositions
+		//     Map<String, PropositionalFunction> symbolMap = new HashMap<String, PropositionalFunction>(1);
+		//     symbolMap.put("P", envDomain.getPropFunction(PFINSOUTHWEST));
+
+		// Build task MDP
+		//  		GLTLCompiler compiler = new GLTLCompiler(formula, symbolMap, envDomain);
+		//              Domain compiledDomain = compiler.generateDomain();
+		//              RewardFunction rf = compiler.generateRewardFunction();
+		//              TerminalFunction tf = compiler.generateTerminalFunction();
+		//              State initialCompiledState = compiler.addInitialTaskStateToEnvironmentState(compiledDomain, initialEnvState);
+
+		//begin planning in our compiled domain
+		planAndVisualize(gwd, domain, rf, tf, 0.99, s);
+
+	}
+
+	public static void stateExplorer(GridWorldDomain gwd, Domain domain, State s){
+		Visualizer v = GridWorldVisualizer.getVisualizer(gwd.getMap());
+		VisualExplorer exp = new VisualExplorer(domain, v, s);
+		exp.addKeyAction("w", GridWorldDomain.ACTIONNORTH);
+		exp.addKeyAction("s", GridWorldDomain.ACTIONSOUTH);
+		exp.addKeyAction("a", GridWorldDomain.ACTIONWEST);
+		exp.addKeyAction("d", GridWorldDomain.ACTIONEAST);
+		exp.initGUI();
+	}
+
+
+	public static void planAndVisualize(GridWorldDomain gwd, Domain domain, RewardFunction rf, TerminalFunction tf, double discountFactor, State initialState){
+
+		//use value iteration
+		ValueIteration vi = new ValueIteration(domain, rf, tf, discountFactor, new DiscreteStateHashFactory(), 0.01, 100);
+		vi.planFromState(initialState);
+		Policy p = new GreedyQPolicy(vi);
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rf, tf);
+
+		//crate episode sequence visualizer
+		Visualizer v = GridWorldVisualizer.getVisualizer(gwd.getMap());
+		EpisodeSequenceVisualizer evis = new EpisodeSequenceVisualizer(v, domain, Arrays.asList(ea));
+
+	}
+}

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author James MacGlashan.
+ * @author James MacGlashan. ... tweaker Michael Littman
  */
 public class SimpleDemo {
 
@@ -59,9 +59,6 @@ public class SimpleDemo {
 		TerminalFunction tf = compiler.generateTerminalFunction();
 
 		State initialCompiledState = compiler.addInitialTaskStateToEnvironmentState(compiledDomain, initialEnvState);
-
-
-
 
 
 		//begin planning in our compiled domain
@@ -118,8 +115,5 @@ public class SimpleDemo {
 			return this.safetyMap[x][y] == 2;
 		}
 	}
-
-
-
 
 }
