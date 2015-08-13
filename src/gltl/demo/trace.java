@@ -49,10 +49,14 @@ public class trace {
 		grid = 'H';
 		formula = "&F3RG1F1B"; // hallway!
 
-		grid = 'N';
-		formula = "U2!BR"; // avoid blue en route to red
-		formula = "G2F2&BF2R"; // slides
-		formula = "&F2RG2!B";  // slides
+//		grid = 'R';
+//		formula = "U2!BR"; // avoid blue en route to red
+//		formula = "G2!B";
+//		formula = "G4F4&BF4R"; // slides
+//		formula = "&F2RG2!B";  // slides
+//		formula = "F5R";
+//		formula = "F3G3B";
+//		formula = "G4&!R!B";
 
 //		formula = "!F3!F3B"; // always eventually blue
 //		formula = "F3&RF3B"; // go to red then blue

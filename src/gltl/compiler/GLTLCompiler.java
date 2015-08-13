@@ -776,6 +776,7 @@ public class GLTLCompiler implements DomainGenerator {
 					} else {
 						ObjectInstance newtranscont = trans.taskObject.copy();
 						ObjectInstance newtransexpire = trans.taskObject.copy();
+						newtransexpire.setValue(ATTSPEC, 0); // modification
 						constructedTransitions.add(new TaskMDPTransition(newtranscont, trans.p * discount));
 						constructedTransitions.add(new TaskMDPTransition(newtransexpire, trans.p * (1.0 - discount)));
 					}
