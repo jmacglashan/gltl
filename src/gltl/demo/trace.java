@@ -38,16 +38,16 @@ public class trace {
 		char grid;
 
 
-		formula = "U6!BR"; // avoid blue en route to red
-		grid = 'R';
+//		formula = "U6!BR"; // avoid blue en route to red
+		grid = 'N';
 		// formula = "U6!BB"; // avoid blue en route to blue
 //		formula = "&G2!BF2R"; // eventually red and always not blue (waits)
 //		formula = "F3B"; // go to blue
-		formula = "F2R"; // go to red
-		formula = "G3!B"; // avoid blue
+//		formula = "F2R"; // go to red
+//		formula = "G3!B"; // avoid blue
 
-		grid = 'H';
-		formula = "&F3RG1F1B"; // hallway!
+//		grid = 'H';
+//		formula = "&F3RG1F1B"; // hallway!
 
 //		grid = 'R';
 //		formula = "U2!BR"; // avoid blue en route to red
@@ -62,7 +62,7 @@ public class trace {
 //		formula = "F3&RF3B"; // go to red then blue
 //		formula = "F3&BF3R"; // go to blue then red
 //		formula = "F3&RF3&BF3R"; // red, blue, red
-//		formula = "&F3RF3B";    // has to touch both
+		formula = "G3&F3RF3B";    // has to touch both
 //		formula = "G1F1R";		// always eventually red
 //		formula = "F1G1R";		// eventually always red (ever so slightly different)
 //		formula = "G4F4B"; // stay in blue (always eventually) (also slow)
