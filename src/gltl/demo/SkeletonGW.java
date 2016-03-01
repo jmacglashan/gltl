@@ -22,7 +22,16 @@ public class SkeletonGW {
 
 	public static void main(String[] args) {
 
-		GridWorldDomain gwd = new GridWorldDomain(10, 10); //we'll give ourselves a 10x10 gridWorld canvas
+	GridWorldDomain gwd;
+	final Domain envDomain;
+	int numLocations;
+	State s;
+	final Domain domain;
+
+
+	if (false) {
+		gwd = new GridWorldDomain(10, 10); //we'll give ourselves a 10x10 gridWorld canvas
+		domain = gwd.generateDomain(); //create our domain
 		gwd.setNumberOfLocationTypes(2); //two kinds of locations to specify
 		gwd.horizontal1DNorthWall(0, 9, 1); //make a wall to confine space to the bottom two rows
 		gwd.setProbSucceedTransitionDynamics(1.00); // make things noisy
@@ -41,22 +50,41 @@ public class SkeletonGW {
 // -.1:   .5 ?, .6 E,                             .70 E,               .80 E, .82 W, .90 W
 // -.01:  .5 ?, .6 ?,                             .70 ?,               .80 ?, .82 ?, .90 E, .94 E, .96 E, .98 E, 1.00 N
 		// gwd.setTransitionDynamics(new double[][]{{0.8, 0., 0.1, 0.1}, {0., 0.8, 0.1, 0.1}, {0.1, 0.1, 0.8, 0.}, {0.1, 0.1, 0., 0.8}});
-		final Domain domain = gwd.generateDomain(); //create our domain
 
 		//construct our state
-		int numLocations = 10; //I'm only adding two locations for illustrative purposes
-		State s = GridWorldDomain.getOneAgentNLocationState(domain,numLocations);
+		numLocations = 10; //I'm only adding two locations for illustrative purposes
+		s = GridWorldDomain.getOneAgentNLocationState(domain, numLocations);
 		GridWorldDomain.setAgent(s, 7, 0); //agent starts at 7,0
 		GridWorldDomain.setLocation(s, 0, 0, 1, 1); //first location (0) in 0,1 with type 1
 
 		int i;
 		for (i = 0; i < 6; i++) {
-		    GridWorldDomain.setLocation(s, i+1, i+1, 1, 0); //second location (1) in 1,1 with type 0
-		    // System.out.println("Count is: " + i);
+			GridWorldDomain.setLocation(s, i + 1, i + 1, 1, 0); //second location (1) in 1,1 with type 0
+			// System.out.println("Count is: " + i);
 		}
 		GridWorldDomain.setLocation(s, 7, 8, 0, 0);
 		GridWorldDomain.setLocation(s, 8, 8, 1, 0);
 		GridWorldDomain.setLocation(s, 9, 9, 1, 1);
+	} else {
+		gwd = new GridWorldDomain(4, 4);
+		domain = gwd.generateDomain(); //create our domain
+		//gwd.setMapToFourRooms();
+		gwd.setNumberOfLocationTypes(2); //two kinds of locations to specify
+		gwd.setProbSucceedTransitionDynamics(0.80);
+		gwd.horizontalWall(0,3,3); // upper wall
+		gwd.horizontalWall(1,1,1); // internal wall
+
+		envDomain = gwd.generateDomain();
+
+		//construct our state
+		numLocations = 2; // allocate locations
+		s = GridWorldDomain.getOneAgentNLocationState(envDomain, numLocations);
+		GridWorldDomain.setAgent(s, 0, 0); //agent starting place
+		GridWorldDomain.setLocation(s, 0, 3, 1, 0); //first location (0) with type 1 = goal
+		GridWorldDomain.setLocation(s, 1, 3, 2, 1); //second location (1) with type 1 = blue
+
+
+	}
 		
 		//uncomment to launch visual explorer
 		//stateExplorer(gwd, domain, s);

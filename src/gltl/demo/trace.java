@@ -5,6 +5,8 @@ import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.EpisodeSequenceVisualizer;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
+import burlap.domain.singleagent.gridworld.GridWorldRewardFunction;
+import burlap.domain.singleagent.gridworld.GridWorldTerminalFunction;
 import burlap.domain.singleagent.gridworld.GridWorldVisualizer;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
@@ -39,7 +41,7 @@ public class trace {
 
 
 //		formula = "U6!BR"; // avoid blue en route to red
-		grid = 'N';
+		grid = 'R'; // R N
 		// formula = "U6!BB"; // avoid blue en route to blue
 //		formula = "&G2!BF2R"; // eventually red and always not blue (waits)
 //		formula = "F3B"; // go to blue
@@ -73,9 +75,14 @@ public class trace {
 //		formula = "&G1F2RG1F2B"; // does a bunch of blue then a bunch of red. not sure why it doesn't intermingle
 //		formula = "|G1F1RG4F4B"; // Formula from Charles' talk
 //		formula = "&G1F1RG4F4B"; // try "and"
-//		formula = "&F1RG1F1B"; // hallway with short time to graduate.
+		formula = "&F1RG1F1B"; // hallway with short time to graduate.
 //		formula = "&F1RG1!B"; // avoid blue
 //		formula = "U3!BR"; // not blue until red
+		// formula = "F3|BR"; // get to blue or red
+//		formula = "F3R"; // get to red (ignoring blue)
+//		formula = "&F3RG3!B"; // get to red (avoiding blue)
+		//formula = "G3!|BR"; // avoid blue and red
+
 
 		// formula = eventually(make(P))
 		// GLTLCompiler.TransitionQuery formulaobj = new GLTLCompiler.TransitionQuery()
@@ -160,18 +167,30 @@ public class trace {
 				//define our environment MDP
 				// GridWorldDomain gwd = new GridWorldDomain(11, 11);
 				gwd = new GridWorldDomain(4, 4);
-				//gwd.setMapToFourRooms();
+
 				gwd.setNumberOfLocationTypes(2); //two kinds of locations to specify
-				gwd.setProbSucceedTransitionDynamics(0.80);
 				gwd.horizontalWall(0,3,3); // upper wall
 				gwd.horizontalWall(1,1,1); // internal wall
 
+
+				double slipProb = 0.2;
+				double stayProb = 1.0 - slipProb;
+				double thisSlip = slipProb * .5;
+				double[][] transitionDynamics = new double[][]
+						{
+								// North   South     East      West
+								{stayProb, 0., thisSlip, thisSlip}, //selecting north
+								{0., stayProb, thisSlip, thisSlip}, //selecting south
+								{thisSlip, thisSlip, stayProb, 0.},       //selecting east
+								{thisSlip, thisSlip, 0., stayProb}  // selecting west
+						};
+				gwd.setTransitionDynamics(transitionDynamics);
 				envDomain = gwd.generateDomain();
 
 				//construct our state
 				numLocations = 2; // allocate locations
 				s = GridWorldDomain.getOneAgentNLocationState(envDomain, numLocations);
-				GridWorldDomain.setAgent(s, 0, 0); //agent starting place
+				GridWorldDomain.setAgent(s, 2, 1); //agent starting place
 				GridWorldDomain.setLocation(s, 0, 3, 1, 0); //first location (0) with type 1 = goal
 				GridWorldDomain.setLocation(s, 1, 3, 2, 1); //second location (1) with type 1 = blue
 
